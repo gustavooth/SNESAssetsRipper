@@ -7,6 +7,8 @@
 #include "graphicstilesscene.h"
 #include "paletteeditor.h"
 #include "romdataengine.h"
+#include "snessavestate.h"
+#include "savestatepaletteselector.h"
 #include "tilepreset.h"
 #include <QGraphicsScene>
 #include <QSettings>
@@ -20,7 +22,7 @@ class MainUI : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainUI(QWidget *parent = 0);
+    explicit MainUI(QWidget *parent = nullptr);
     ~MainUI();
 
 private slots:
@@ -65,6 +67,10 @@ private slots:
 
     void on_editPaletteButton_clicked();
 
+    void on_openStateButton_clicked();
+
+    void on_pickSavestatePaletteButton_clicked();
+
 private:
     Ui::MainUI      *ui;
     TilePreset      currentSet;
@@ -73,8 +79,10 @@ private:
     QString         lastROMDirectory;
     QString         lastPNGDirectory;
     PaletteEditor*  paletteEditor;
+    SNESSavestate       snesSaveState;
 
     QString         romFile;
+    QString         savestateFile;
     unsigned int    tilesPerRow;
     bool            romHasHeader;
     GraphicsTilesScene  *tileScene;
@@ -83,6 +91,7 @@ private:
 
     QList<tile8>    rawTiles;
     SNESPalette     mPalette;
+    SavestatePaletteSelector* savestatepaletteselector;
 
     QMap<QString, CompressionInfo>    compressInfos;
 
@@ -99,6 +108,7 @@ private:
     bool    extractPalette();
 
     void    closeEvent(QCloseEvent* event);
+    void    openSavestate(QString path);
 };
 
 #endif // MAINUI_H

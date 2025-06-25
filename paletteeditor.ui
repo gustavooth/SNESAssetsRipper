@@ -72,7 +72,7 @@
           </layout>
          </item>
          <item>
-          <widget class="GraphicsPaletteView" name="paletteGView"/>
+          <widget class="GraphicsClickableView" name="paletteGView"/>
          </item>
         </layout>
        </item>
@@ -201,9 +201,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>GraphicsPaletteView</class>
+   <class>GraphicsClickableView</class>
    <extends>QGraphicsView</extends>
-   <header>graphicspaletteview.h</header>
+   <header>graphicsclickableview.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

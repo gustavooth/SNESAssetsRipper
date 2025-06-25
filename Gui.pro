@@ -14,6 +14,10 @@ QMAKE_CFLAGS += "-std=c99"
 
 RC_FILE = snestileskitten.rc
 
+INCLUDEPATH += "lowlevelstuff/src/"
+INCLUDEPATH += "lowlevelstuff/src/savestate"
+INCLUDEPATH += "lowlevelstuff/src/puff/"
+
 SOURCES += main.cpp\
         mainui.cpp \
     tilepreset.cpp \
@@ -35,9 +39,15 @@ SOURCES += main.cpp\
     mgraphicsview.cpp \
     myrominfo.cpp \
     paletteeditor.cpp \
-    graphicspaletteview.cpp \
     snespalette.cpp \
-    emupaletteimporter.cpp
+    emupaletteimporter.cpp \
+    lowlevelstuff/src/savestateloader.c \
+    lowlevelstuff/src/savestate/savestate.c \
+    lowlevelstuff/src/puff/puff.c \
+    lowlevelstuff/src/savestate/snes9x_152.c \
+    savestatepaletteselector.cpp \
+    graphicsclickableview.cpp \
+    snessavestate.cpp
 
 HEADERS  += mainui.h \
     tilepreset.h \
@@ -58,15 +68,22 @@ HEADERS  += mainui.h \
     mgraphicsview.h \
     myrominfo.h \
     paletteeditor.h \
-    graphicspaletteview.h \
     snespalette.h \
-    emupaletteimporter.h
+    emupaletteimporter.h \
+    lowlevelstuff/src/savestateloader.h \
+    lowlevelstuff/src/savestate/_savestate.h \
+    lowlevelstuff/src/savestate/snes9x_152.h \
+    lowlevelstuff/src/puff/puff.h \
+    savestatepaletteselector.h \
+    graphicsclickableview.h \
+    snessavestate.h
 
 FORMS    += mainui.ui \
     presetsavedialog.ui \
     injectdialog.ui \
     tileinfow.ui \
-    paletteeditor.ui
+    paletteeditor.ui \
+    savestatepaletteselector.ui
 
 DISTFILES += \
     snestileskitten.rc

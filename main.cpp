@@ -2,6 +2,8 @@
 #include "paletteeditor.h"
 #include <QApplication>
 #include <QDebug>
+#include <QGraphicsView>
+
 
 int main(int argc, char *argv[])
 {
@@ -35,7 +37,6 @@ int main(int argc, char *argv[])
     ROMDataEngine::loadCompressionPlugins(pluginsDir);
     TilesPattern::loadPatterns(patternDir);
 
-
     /*SNESPalette mPalette(16);
     unsigned int psize = 16;
     for (unsigned int i = 0; i < psize; i++)
@@ -57,7 +58,7 @@ int main(int argc, char *argv[])
         t.id = i;
         someTiles.append(t);
     }
-    /*qDebug() << TilesPattern::transform(TilesPattern::pattern("normal"), someTiles);
+    qDebug() << TilesPattern::transform(TilesPattern::pattern("normal"), someTiles);
     qDebug() << TilesPattern::transform(TilesPattern::pattern("32x32 B (4x4)"), someTiles);
     qDebug() << TilesPattern::transform(TilesPattern::pattern("32x32 A (2x2*4)"), someTiles);
     QVector<QVector<tile8> > tt = TilesPattern::transform(TilesPattern::pattern("32x32 B (4x4)"), someTiles);

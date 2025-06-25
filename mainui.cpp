@@ -2,6 +2,7 @@
 #include "graphicspalettecoloritem.h"
 #include "graphicstileitem.h"
 #include "mainui.h"
+#include "savestatepaletteselector.h"
 #include "ui_mainui.h"
 
 #include <QFile>
@@ -43,6 +44,13 @@ MainUI::MainUI(QWidget *parent) :
     paletteEditor = new PaletteEditor();
     connect(paletteEditor, &PaletteEditor::paletteChanged, this, [=] {
         mPalette = paletteEditor->palette();
+        buildPaletteScene();
+        buildTileScene();
+    });
+    savestatepaletteselector = new SavestatePaletteSelector();
+    connect(savestatepaletteselector, &SavestatePaletteSelector::paletteChanged, this, [=]
+    {
+        mPalette = savestatepaletteselector->currentPalette();
         buildPaletteScene();
         buildTileScene();
     });
@@ -561,4 +569,32 @@ void MainUI::on_editPaletteButton_clicked()
     paletteEditor->show();
     paletteEditor->setPalette(mPalette);
     paletteEditor->setRomFile(romFile);
+}
+
+void MainUI::on_openStateButton_clicked()
+{
+    QString fileName = QFileDialog::getOpenFileName(this,
+          tr("Select a SaveState file"), lastROMDirectory, tr("Savestate files;All files (*)"));
+    if (!fileName.isNull())
+        openSavestate(fileName);
+}
+
+void    MainUI::openSavestate(QString path)
+{
+    qDebug() << "Opening savestate";
+    if (!snesSaveState.open(path))
+    {
+        ui->statusBar->showMessage(tr("Error loading the savestate"));
+        ui->pickSavestatePaletteButton->setEnabled(false);
+        return ;
+    }
+    savestateFile = path;
+    ui->statusBar->showMessage(QString(tr("Savestate loaded : %1 version %2 - %3")).arg(snesSaveState.emulator, snesSaveState.version.toString(), snesSaveState.romName));
+    savestatepaletteselector->setPalettesData(snesSaveState.CGDATA);
+    ui->pickSavestatePaletteButton->setEnabled(true);
+}
+
+void MainUI::on_pickSavestatePaletteButton_clicked()
+{
+    savestatepaletteselector->show();
 }

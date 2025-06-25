@@ -35,7 +35,7 @@ ROMInfo::ROMInfo(QString romFile)
     unsigned int header_offset = hasHeader ? 0x200 : 0;
     f.seek(0x7FC0 + header_offset);
     QByteArray headerData = f.read(32);
-    rom_infos* crom_info = get_rom_info(headerData.data());
+    rom_infos* crom_info = get_rom_info((const uint8_t*)headerData.data());
     qDebug() << QString::number(crom_info->checksum, 16) << QString::number(crom_info->checksum_comp, 16);
     qDebug() << crom_info->title;
     if (!crom_info->make_sense)
@@ -43,7 +43,7 @@ ROMInfo::ROMInfo(QString romFile)
         f.seek(0xFFC0 + header_offset);
         QByteArray headerData = f.read(32);
         free(crom_info);
-        crom_info = get_rom_info(headerData.data());
+        crom_info = get_rom_info((const uint8_t*)headerData.data());
         qDebug() << QString::number(crom_info->checksum, 16) << QString::number(crom_info->checksum_comp, 16);
         qDebug() << crom_info->title;
     }

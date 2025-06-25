@@ -13,8 +13,8 @@ PaletteEditor::PaletteEditor(QWidget *parent) :
     ui->setupUi(this);
     scene = new QGraphicsScene();
     ui->paletteGView->setScene(scene);
-    connect(ui->paletteGView, &GraphicsPaletteView::itemClicked, [=] {
-        colorItem = ui->paletteGView->getClickedItem();
+    connect(ui->paletteGView, &GraphicsClickableView::itemClicked, [=] {
+        GraphicsPaletteColorItem* colorItem = static_cast<GraphicsPaletteColorItem*>(ui->paletteGView->getClickedItem());
         ui->lineEditIndex->setText(QString::number(colorItem->iColor));
         ui->lineEditB->setText(QString::number(qBlue(colorItem->color), 16));
         ui->lineEditR->setText(QString::number(qRed(colorItem->color), 16));

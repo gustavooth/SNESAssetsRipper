@@ -1,27 +1,26 @@
-#include "graphicspaletteview.h"
+#include "graphicsclickableview.h"
 
 
-GraphicsPaletteView::GraphicsPaletteView(QWidget *parent) : QGraphicsView (parent)
+GraphicsClickableView::GraphicsClickableView(QWidget *parent) : QGraphicsView (parent)
 {
 
 }
 
-GraphicsPaletteColorItem *GraphicsPaletteView::getClickedItem()
+QGraphicsItem* GraphicsClickableView::getClickedItem()
 {
     return m_current_item;
 }
 
-void GraphicsPaletteView::mouseReleaseEvent(QMouseEvent *env)
+void GraphicsClickableView::mouseReleaseEvent(QMouseEvent *env)
 {
     if (scene() == nullptr)
         return;
     QGraphicsItem* item = scene()->itemAt(mapToScene(env->pos()), transform());
     if (item != nullptr)
     {
-        GraphicsPaletteColorItem* gItem = (GraphicsPaletteColorItem*) item;
-        if (gItem != m_current_item)
+        if (item != m_current_item)
         {
-            m_current_item = gItem;
+            m_current_item = item;
             emit itemClicked();
         }
     }
