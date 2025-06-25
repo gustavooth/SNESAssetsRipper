@@ -1,0 +1,19 @@
+[_]
+name=Illusion of Gaia - Freedan main sprite
+
+[rom]
+name=
+type=LoROM
+
+[tiles]
+pc_location=1ac000
+snes_location=0
+length=16352
+bpp=4
+compression=None
+pattern=normal
+
+[palette]
+pc_location=0
+snes_location=0
+nozerocolor=false

@@ -1,0 +1,19 @@
+[_]
+name=DONALD DUCK - Donald Sprites
+
+[rom]
+name=
+type=HiROM
+
+[tiles]
+pc_location=d0000
+snes_location=0
+length=65536
+bpp=4
+compression=None
+pattern=normal
+
+[palette]
+pc_location=140ae
+snes_location=0
+nozerocolor=false

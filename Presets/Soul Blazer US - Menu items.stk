@@ -1,0 +1,19 @@
+[_]
+name=Soul Blazer US - Menu items
+
+[rom]
+name=
+type=LoROM
+
+[tiles]
+pc_location=4b040
+snes_location=0
+length=8192
+bpp=4
+compression=None
+pattern=normal
+
+[palette]
+pc_location=0
+snes_location=0
+nozerocolor=false

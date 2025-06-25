@@ -1,0 +1,19 @@
+[_]
+name=MIRACLE GIRLS - TOMOMI
+
+[rom]
+name=
+type=HiROM
+
+[tiles]
+pc_location=64000
+snes_location=0
+length=20480
+bpp=4
+compression=None
+pattern=32x32 B (4x4)
+
+[palette]
+pc_location=15c39
+snes_location=0
+nozerocolor=false

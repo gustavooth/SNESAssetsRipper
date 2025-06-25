@@ -1,0 +1,19 @@
+[_]
+name=THE LORD OF THE RINGS - things
+
+[rom]
+name=
+type=LoROM
+
+[tiles]
+pc_location=36660
+snes_location=0
+length=65536
+bpp=4
+compression=None
+pattern=normal
+
+[palette]
+pc_location=0
+snes_location=0
+nozerocolor=false

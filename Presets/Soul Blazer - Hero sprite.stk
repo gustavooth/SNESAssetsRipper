@@ -1,0 +1,19 @@
+[_]
+name=Soul Blazer - Hero sprite
+
+[rom]
+name=
+type=LoROM
+
+[tiles]
+pc_location=54000
+snes_location=0
+length=16384
+bpp=4
+compression=Quintet1
+pattern=normal
+
+[palette]
+pc_location=4f340
+snes_location=0
+nozerocolor=false
