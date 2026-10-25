@@ -61,8 +61,7 @@ static QString buildDocumentation(const QString &language, const QString &tcpEnd
         txt += "  pick_savestate_palette index (0-15): aplica paleta do savestate\n";
         txt += "  save_preset / open_preset   path: presets .stk\n";
         txt += "  set_language          lang: en ou pt_BR\n";
-        txt += "  set_view_background   spec: cor de fundo da exibição (#RRGGBB) ou\n";
-        txt += "                        'checker' (xadrez, destaca os assets)\n\n";
+        txt += "\n";
         txt += "NOTA: set_tiles_location / set_palette / set_pattern não atualizam a\n";
         txt += "visão sozinhos - chame refresh em seguida (como clicar em Atualizar).\n\n";
         txt += "EXEMPLO DE CHAMADA\n";
@@ -119,8 +118,7 @@ static QString buildDocumentation(const QString &language, const QString &tcpEnd
     txt += "  pick_savestate_palette index (0-15): apply a savestate palette\n";
     txt += "  save_preset / open_preset   path: .stk presets\n";
     txt += "  set_language          lang: en or pt_BR\n";
-    txt += "  set_view_background   spec: view background color (#RRGGBB) or\n";
-    txt += "                        'checker' (checkerboard, highlights assets)\n\n";
+    txt += "\n";
     txt += "NOTE: set_tiles_location / set_palette / set_pattern do not refresh the\n";
     txt += "view by themselves - call refresh afterwards (like clicking Refresh).\n\n";
     txt += "CALL EXAMPLE\n";

@@ -17,9 +17,10 @@
 #include <QPluginLoader>
 #include <QInputDialog>
 #include <QShortcut>
+#include <QDesktopServices>
+#include <QUrl>
 #include <QMenuBar>
 #include <QMenu>
-#include <QColorDialog>
 #include <QPainter>
 
 #include <QRegularExpressionValidator>
@@ -36,8 +37,15 @@ MainUI::MainUI(QWidget *parent) :
     ui(new Ui::MainUI)
 {
     ui->setupUi(this);
-    ui->presetOpenPushButton->setIcon(style()->standardPixmap(QStyle::SP_DialogOpenButton));
-    ui->presetSavePushButton->setIcon(style()->standardPixmap(QStyle::SP_DialogSaveButton));
+    applyDarkTheme();
+    ui->presetOpenPushButton->setIcon(style()->standardIcon(QStyle::SP_DialogOpenButton));
+    ui->presetSavePushButton->setIcon(style()->standardIcon(QStyle::SP_DialogSaveButton));
+    ui->romOpenButton->setIcon(style()->standardIcon(QStyle::SP_DialogOpenButton));
+    ui->openStateButton->setIcon(style()->standardIcon(QStyle::SP_DialogOpenButton));
+    ui->refreshPushButton->setIcon(style()->standardIcon(QStyle::SP_BrowserReload));
+    ui->pngExportPushButton->setIcon(style()->standardIcon(QStyle::SP_DialogSaveButton));
+    ui->pngImportpushButton->setIcon(style()->standardIcon(QStyle::SP_ArrowDown));
+    ui->editPaletteButton->setIcon(style()->standardIcon(QStyle::SP_FileDialogDetailedView));
     QRegularExpressionValidator* hexValid = new QRegularExpressionValidator(QRegularExpression("[0-F|a-f]{0,8}"));
     QIntValidator* sizeValid = new QIntValidator(0, 1024 * 1024 * 1024);
     romHasHeader = true;
@@ -75,6 +83,10 @@ MainUI::MainUI(QWidget *parent) :
     buildPaletteScene();
     QShortcut* refreshShortcut = new QShortcut(QKeySequence("F5"), this);
     connect(refreshShortcut, &QShortcut::activated, [=]{ this->on_refreshPushButton_clicked(); });
+    QShortcut* zoomInShortcut = new QShortcut(QKeySequence::ZoomIn, this);
+    connect(zoomInShortcut, &QShortcut::activated, this, &MainUI::on_zoomInButton_clicked);
+    QShortcut* zoomOutShortcut = new QShortcut(QKeySequence::ZoomOut, this);
+    connect(zoomOutShortcut, &QShortcut::activated, this, &MainUI::on_zoomOutButton_clicked);
     QShortcut* incShortcut = new QShortcut(QKeySequence("F1"), this);
     connect(incShortcut, &QShortcut::activated, [=]{ this->on_netaButton_clicked(); });
 
@@ -126,12 +138,20 @@ MainUI::MainUI(QWidget *parent) :
         restoreGeometry(m_settings->value("windowGeometry").toByteArray());
         restoreState(m_settings->value("windowState").toByteArray());
     }
-    setWindowTitle(qApp->applicationName() + " " + qApp->applicationVersion());
+    updateZoomLabel();
+    updateWindowTitle();
     dataEngine.overrideHeaderInfo = true;
 
-    // Tile view background (checkerboard highlights transparent pixels)
-    m_viewBackgroundSpec = m_settings->value("viewBackground", "checker").toString();
-    applyViewBackground();
+    // Tile view background: fixed checkerboard (transparent pixels show through)
+    {
+        QPixmap checker(24, 24);
+        QPainter p(&checker);
+        p.fillRect(0, 0, 24, 24, QColor(46, 46, 46));
+        p.fillRect(0, 0, 12, 12, QColor(72, 72, 72));
+        p.fillRect(12, 12, 12, 12, QColor(72, 72, 72));
+        p.end();
+        tileScene->setBackgroundBrush(QBrush(checker));
+    }
 
     // ---- Options menu / language / MCP server ----
     m_translationsDir = translationsDirectory();
@@ -212,7 +232,7 @@ void MainUI::buildPaletteScene()
     unsigned int j = 0;
     unsigned int i = 0;
     unsigned colPos = 0;
-    palScene->setBackgroundBrush(Qt::black);
+    palScene->setBackgroundBrush(QColor(0x24, 0x27, 0x2b));
     foreach(SNESColor col, mPalette.colors)
     {
         GraphicsPaletteColorItem *newItem = new GraphicsPaletteColorItem();
@@ -222,7 +242,7 @@ void MainUI::buildPaletteScene()
         palScene->addItem(newItem);
         i++;
         colPos++;
-        if (i % 8 == 0) {
+        if (i % 16 == 0) {
             j++;
             i = 0;
         }
@@ -341,10 +361,12 @@ void MainUI::openRom(QString rom)
     intVal->setTop(romInfo.size);
     lastROMDirectory = QFileInfo(rom).dir().absolutePath();
     unsigned int numberOfBanks = romInfo.size / 0x10000;
+    ui->bankComboBox->clear();
     for (unsigned int i = 0; i < numberOfBanks; i++)
     {
         ui->bankComboBox->addItem(QString("Bank $%1").arg(i, 2, 16, QChar('0')));
     }
+    updateWindowTitle();
 
 }
 
@@ -354,6 +376,7 @@ bool MainUI::loadPreset(const QString& presetFile)
         updateUiWithPreset();
         lastPresetDirectory = QFileInfo(presetFile).dir().absolutePath();
         ui->statusBar->showMessage(tr("Preset file %1 loaded - %2").arg(QFileInfo(presetFile).fileName(), currentSet.name));
+        updateWindowTitle();
         if (!romFile.isEmpty())
             rebuildGTileView();
         return true;
@@ -467,6 +490,7 @@ void MainUI::on_tilesPerRowSpinBox_valueChanged(int arg1)
 void MainUI::on_tileZoomHorizontalSlider_valueChanged(int value)
 {
     tileScene->setTilesZoom(value);
+    updateZoomLabel();
 }
 
 
@@ -507,6 +531,7 @@ bool MainUI::savePresetTo(const QString &presetFile, QString *error)
     {
         lastPresetDirectory = QFileInfo(presetFile).dir().absolutePath();
         ui->statusBar->showMessage(tr("Preset file saved properly"));
+        updateWindowTitle();
         return true;
     }
     if (error)
@@ -701,6 +726,7 @@ void    MainUI::openSavestate(QString path)
         return ;
     }
     savestateFile = path;
+    ui->savestateLineEdit->setText(path);
     ui->statusBar->showMessage(QString(tr("Savestate loaded : %1 version %2 - %3")).arg(snesSaveState.emulator, snesSaveState.version.toString(), snesSaveState.romName));
     savestatepaletteselector->setPalettesData(snesSaveState.CGDATA);
     ui->pickSavestatePaletteButton->setEnabled(true);
@@ -713,6 +739,58 @@ void MainUI::on_pickSavestatePaletteButton_clicked()
 
 // ==================== Options / language / MCP server ====================
 
+void MainUI::applyDarkTheme()
+{
+    // Prefer an external file next to the binary (lets users tweak it),
+    // fall back to the in-tree copy so dev builds work without install.
+    QStringList candidates;
+    candidates << QCoreApplication::applicationDirPath() + "/dark_theme.qss"
+               << QCoreApplication::applicationDirPath() + "/../src/dark_theme.qss"
+               << QCoreApplication::applicationDirPath() + "/../../src/dark_theme.qss";
+    for (const QString &path : candidates)
+    {
+        QFile f(path);
+        if (f.open(QIODevice::ReadOnly | QIODevice::Text))
+        {
+            setStyleSheet(QString::fromUtf8(f.readAll()));
+            return;
+        }
+    }
+    QDir srcDir(QCoreApplication::applicationDirPath());
+    while (srcDir.cdUp())
+    {
+        QFile f(srcDir.absoluteFilePath("src/dark_theme.qss"));
+        if (f.open(QIODevice::ReadOnly | QIODevice::Text))
+        {
+            setStyleSheet(QString::fromUtf8(f.readAll()));
+            return;
+        }
+        if (srcDir.isRoot())
+            break;
+    }
+}
+
+void MainUI::updateWindowTitle()
+{
+    QString base = QStringLiteral("SNES Sprite Extractor");
+    QString project;
+    if (!currentSet.name.isEmpty())
+        project = currentSet.name;
+    else if (!romFile.isEmpty())
+        project = QFileInfo(romFile).fileName();
+    if (project.isEmpty())
+        setWindowTitle(base);
+    else
+        setWindowTitle(base + QStringLiteral(" - [Project: ") + project + QStringLiteral("]"));
+}
+
+void MainUI::updateZoomLabel()
+{
+    int v = ui->tileZoomHorizontalSlider->value();
+    int pct = v * 100 / 8;
+    ui->zoomValueLabel->setText(QString("(%1%)").arg(pct));
+}
+
 void MainUI::buildMenus()
 {
     m_optionsMenu = menuBar()->addMenu(tr("Options"));
@@ -723,22 +801,37 @@ void MainUI::buildMenus()
     m_actionMcp->setToolTip(tr("Lets an AI control this tool through the MCP protocol (localhost TCP)"));
     m_actionMcp->setStatusTip(m_actionMcp->toolTip());
     connect(m_actionMcp, &QAction::toggled, this, &MainUI::toggleMcpServer);
-    m_optionsMenu->addSeparator();
-    m_actionMcpDocs = m_optionsMenu->addAction(tr("MCP documentation"));
-    m_actionMcpDocs->setToolTip(tr("Shows how to connect an AI (OpenCode) to this tool and lists the available tools"));
-    connect(m_actionMcpDocs, &QAction::triggered, this, &MainUI::openMcpDocs);
-    m_optionsMenu->addSeparator();
-    m_viewBgMenu = m_optionsMenu->addMenu(tr("View background color"));
-    m_viewBgMenu->setToolTip(tr("Pick the color shown behind the tiles (color 0 pixels are transparent)"));
-    m_actionViewBgColor = m_viewBgMenu->addAction(tr("Pick color..."));
-    connect(m_actionViewBgColor, &QAction::triggered, this, [this] {
-        QColor c = QColorDialog::getColor(tileScene->backgroundBrush().color(), this, tr("View background color"));
-        if (c.isValid())
-            setViewBackground(c.name());
-    });
-    m_actionViewBgChecker = m_viewBgMenu->addAction(tr("Checkerboard"));
-    connect(m_actionViewBgChecker, &QAction::triggered, this, [this] { setViewBackground("checker"); });
     refreshLanguageMenu();
+
+    // ---- Shortcuts for the File / Help menus defined in the .ui ----
+    // Note: on_action*_triggered / on_zoom*_clicked slots auto-connect by name
+    // via setupUi(), so no manual connects here (otherwise each action would
+    // fire twice).
+    ui->actionOpenRom->setShortcut(QKeySequence::Open);
+    ui->actionSavePreset->setShortcut(QKeySequence::Save);
+    ui->actionQuit->setShortcut(QKeySequence::Quit);
+}
+
+void MainUI::on_zoomInButton_clicked()
+{
+    ui->tileZoomHorizontalSlider->setValue(ui->tileZoomHorizontalSlider->value() + 5);
+}
+
+void MainUI::on_zoomOutButton_clicked()
+{
+    ui->tileZoomHorizontalSlider->setValue(ui->tileZoomHorizontalSlider->value() - 5);
+}
+
+void MainUI::on_actionOpenRom_triggered() { on_romOpenButton_clicked(); }
+void MainUI::on_actionOpenPreset_triggered() { on_presetOpenPushButton_clicked(); }
+void MainUI::on_actionSavePreset_triggered() { on_presetSavePushButton_clicked(); }
+void MainUI::on_actionExportPng_triggered() { on_pngExportPushButton_clicked(); }
+void MainUI::on_actionReplacePng_triggered() { on_pngImportpushButton_clicked(); }
+void MainUI::on_actionQuit_triggered() { close(); }
+void MainUI::on_actionMcpDocs_triggered() { openMcpDocs(); }
+void MainUI::on_actionAbout_triggered()
+{
+    QDesktopServices::openUrl(QUrl(QStringLiteral("https://github.com/gustavooth/SNESTilesRipper")));
 }
 
 void MainUI::openMcpDocs()
@@ -832,17 +925,14 @@ void MainUI::applyLanguage(const QString &lang)
 void MainUI::retranslateAll()
 {
     ui->retranslateUi(this);
+    updateZoomLabel();
+    updateWindowTitle();
     if (m_optionsMenu)
     {
         m_optionsMenu->setTitle(tr("Options"));
         m_languageMenu->setTitle(tr("Language"));
         m_actionMcp->setText(tr("MCP AI control server"));
         m_actionMcp->setToolTip(tr("Lets an AI control this tool through the MCP protocol (localhost TCP)"));
-        m_actionMcpDocs->setText(tr("MCP documentation"));
-        m_viewBgMenu->setTitle(tr("View background color"));
-        m_viewBgMenu->setToolTip(tr("Pick the color shown behind the tiles (color 0 pixels are transparent)"));
-        m_actionViewBgColor->setText(tr("Pick color..."));
-        m_actionViewBgChecker->setText(tr("Checkerboard"));
         if (m_mcpDocsDialog != nullptr)
             m_mcpDocsDialog->setDocumentation(m_language,
                 (m_mcpServer && m_mcpServer->isRunning()) ? m_mcpServer->endpoint() : QString());
@@ -894,41 +984,6 @@ static QString normalizeHex(QString value)
     while (value.startsWith("$"))
         value.remove(0, 1);
     return value;
-}
-
-void MainUI::applyViewBackground()
-{
-    if (m_viewBackgroundSpec == "checker")
-    {
-        QPixmap checker(24, 24);
-        QPainter p(&checker);
-        p.fillRect(0, 0, 24, 24, QColor(46, 46, 46));
-        p.fillRect(0, 0, 12, 12, QColor(72, 72, 72));
-        p.fillRect(12, 12, 12, 12, QColor(72, 72, 72));
-        p.end();
-        tileScene->setBackgroundBrush(QBrush(checker));
-    }
-    else
-        tileScene->setBackgroundBrush(QBrush(QColor(m_viewBackgroundSpec)));
-}
-
-QString MainUI::setViewBackground(const QString &spec)
-{
-    QString s = spec.trimmed();
-    if (s.compare("checker", Qt::CaseInsensitive) == 0)
-    {
-        m_viewBackgroundSpec = "checker";
-    }
-    else
-    {
-        QColor c(s);
-        if (!c.isValid())
-            return "Invalid color: " + spec + " (use #RRGGBB or 'checker')";
-        m_viewBackgroundSpec = c.name();
-    }
-    m_settings->setValue("viewBackground", m_viewBackgroundSpec);
-    applyViewBackground();
-    return QString();
 }
 
 void MainUI::refreshView()
@@ -1085,7 +1140,6 @@ QVariantMap MainUI::collectState() const
     st["palette_no_zero_color"] = ui->paletteNoZeroColorCheckBox->isChecked();
     st["tiles_pattern"] = ui->tilePatternComboBox->currentText();
     st["zoom"] = ui->tileZoomHorizontalSlider->value();
-    st["view_background"] = m_viewBackgroundSpec;
     st["tiles_extracted"] = rawTiles.size();
     st["palette_colors"] = mPalette.colors.size();
     st["preset_name"] = currentSet.name;

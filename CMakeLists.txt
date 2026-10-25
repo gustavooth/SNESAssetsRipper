@@ -121,6 +121,17 @@ set_target_properties(quintetcompression PROPERTIES
 	LIBRARY_OUTPUT_DIRECTORY ${BIN_DIR}/plugins
 	OUTPUT_NAME "quintetcompression")
 
+add_library(sbm5compression MODULE
+	${CMAKE_SOURCE_DIR}/src/compressions/SBM5/sbm5compression.cpp
+	${CMAKE_SOURCE_DIR}/src/compressions/SBM5/bm5rle.cpp)
+target_include_directories(sbm5compression PRIVATE
+	${CMAKE_SOURCE_DIR}/src
+	${CMAKE_SOURCE_DIR}/src/compressions/SBM5)
+target_link_libraries(sbm5compression PRIVATE Qt6::Core Qt6::Gui)
+set_target_properties(sbm5compression PROPERTIES
+	LIBRARY_OUTPUT_DIRECTORY ${BIN_DIR}/plugins
+	OUTPUT_NAME "sbm5compression")
+
 add_library(compression MODULE
 	${CMAKE_SOURCE_DIR}/src/compressions/BandaiNamco/compression.cpp
 	${CMAKE_SOURCE_DIR}/src/compressions/BandaiNamco/Comp.cpp

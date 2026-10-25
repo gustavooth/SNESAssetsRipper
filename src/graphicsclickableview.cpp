@@ -1,7 +1,8 @@
 #include "graphicsclickableview.h"
 
 
-GraphicsClickableView::GraphicsClickableView(QWidget *parent) : QGraphicsView (parent)
+GraphicsClickableView::GraphicsClickableView(QWidget *parent) : QGraphicsView (parent),
+    m_current_item(nullptr)
 {
 
 }

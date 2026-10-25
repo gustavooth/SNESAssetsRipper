@@ -9,13 +9,19 @@
 PaletteEditor::PaletteEditor(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::PaletteEditor),
+    colorItem(nullptr),
     m_palette(16)
 {
     ui->setupUi(this);
     scene = new QGraphicsScene();
     ui->paletteGView->setScene(scene);
     connect(ui->paletteGView, &GraphicsClickableView::itemClicked, [=] {
-        GraphicsPaletteColorItem* colorItem = static_cast<GraphicsPaletteColorItem*>(ui->paletteGView->getClickedItem());
+        GraphicsPaletteColorItem* clicked = static_cast<GraphicsPaletteColorItem*>(ui->paletteGView->getClickedItem());
+        if (clicked == nullptr)
+            return;
+        if (clicked->iColor >= (unsigned)m_palette.colors.size())
+            return;
+        colorItem = clicked;
         ui->lineEditIndex->setText(QString::number(colorItem->iColor));
         ui->lineEditB->setText(QString::number(qBlue(colorItem->color), 16));
         ui->lineEditR->setText(QString::number(qRed(colorItem->color), 16));
@@ -77,6 +83,10 @@ PaletteEditor::~PaletteEditor()
 
 void    PaletteEditor::editColor()
 {
+    if (colorItem == nullptr)
+        return;
+    if (colorItem->iColor >= (unsigned)m_palette.colors.size())
+        return;
     bool    ok;
     colorItem->color = qRgb(ui->lineEditR->text().toUInt(&ok, 16), ui->lineEditG->text().toUInt(&ok, 16), ui->lineEditB->text().toUInt(&ok, 16));
     m_palette.colors[colorItem->iColor].setRgb(colorItem->color);
@@ -87,6 +97,10 @@ void    PaletteEditor::editColor()
 
 void PaletteEditor::on_lineEditSnes_editingFinished()
 {
+    if (colorItem == nullptr)
+        return;
+    if (colorItem->iColor >= (unsigned)m_palette.colors.size())
+        return;
     bool    ok;
     SNESColor& col = m_palette.colors[colorItem->iColor];
     col.setSNES(ui->lineEditSnes->text().toUInt(&ok, 16));

@@ -47,7 +47,6 @@ public:
     bool        selectSavestatePalette(int index, QString *error = nullptr);
     QString     setPattern(const QString &name);
     void        setZoom(int value);
-    QString     setViewBackground(const QString &spec);
     void        applyLanguage(const QString &lang);
     QStringList languageList() const;
     QVariantMap collectState() const;
@@ -99,6 +98,19 @@ private slots:
     void on_pickSavestatePaletteButton_clicked();
 
 private slots:
+    void    on_zoomInButton_clicked();
+    void    on_zoomOutButton_clicked();
+
+    void    on_actionOpenRom_triggered();
+    void    on_actionOpenPreset_triggered();
+    void    on_actionSavePreset_triggered();
+    void    on_actionExportPng_triggered();
+    void    on_actionReplacePng_triggered();
+    void    on_actionQuit_triggered();
+    void    on_actionMcpDocs_triggered();
+    void    on_actionAbout_triggered();
+
+private slots:
     void    toggleMcpServer(bool enabled);
     void    openMcpDocs();
 
@@ -135,17 +147,14 @@ private:
     QMenu          *m_optionsMenu = nullptr;
     QMenu          *m_languageMenu = nullptr;
     QAction        *m_actionMcp = nullptr;
-    QAction        *m_actionMcpDocs = nullptr;
-    QMenu          *m_viewBgMenu = nullptr;
-    QAction        *m_actionViewBgColor = nullptr;
-    QAction        *m_actionViewBgChecker = nullptr;
     McpDocsDialog  *m_mcpDocsDialog = nullptr;
-    QString         m_viewBackgroundSpec;
 
     void    buildMenus();
     void    refreshLanguageMenu();
     void    retranslateAll();
-    void    applyViewBackground();
+    void    applyDarkTheme();
+    void    updateWindowTitle();
+    void    updateZoomLabel();
     QString defaultLanguage() const;
 
     void    updatePresetWithUi();

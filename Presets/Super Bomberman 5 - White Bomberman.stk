@@ -1,0 +1,19 @@
+[_]
+name=Hu SUPER BOMBERMAN 5 h
+
+[palette]
+nozerocolor=false
+pc_location=180b6
+snes_location=0
+
+[rom]
+name=
+type=HiROM
+
+[tiles]
+bpp=4
+compression=None
+length=24576
+pattern=normal
+pc_location=92000
+snes_location=0

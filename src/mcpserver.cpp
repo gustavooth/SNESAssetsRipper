@@ -396,8 +396,6 @@ QJsonArray McpServer::buildToolsList() const
         toolSchema(QJsonObject{ {"path", stringProp("Preset file path")} }, {"path"}));
     add("set_language", "Switch the UI language.",
         toolSchema(QJsonObject{ {"lang", stringProp(QString("Language id (ex: en, pt_BR). Available ids are listed in get_state 'languages': %1").arg(m_main ? m_main->languageList().join(", ") : "en"))} }, {"lang"}));
-    add("set_view_background", "Set the tile view background: a hex color or a checkerboard (checker highlights transparent pixels and assets).",
-        toolSchema(QJsonObject{ {"spec", stringProp("Hex color like #202020, or 'checker'")} }, {"spec"}));
     return tools;
 }
 
@@ -551,15 +549,6 @@ QJsonObject McpServer::handleToolCall(const QString &name, const QJsonObject &ar
         m_main->applyLanguage(lang);
         return textContent(QString("Language set to %1").arg(lang));
     }
-    if (name == "set_view_background") {
-        QString err = m_main->setViewBackground(args.value("spec").toString());
-        if (!err.isEmpty()) {
-            isError = true;
-            return textContent(err, true);
-        }
-        return textContent(QString("View background set to %1").arg(m_main->collectState().value("view_background").toString()));
-    }
-
     isError = true;
     return textContent(QString("Unknown tool: %1").arg(name), true);
 }

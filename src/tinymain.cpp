@@ -1,5 +1,6 @@
 #include <QCoreApplication>
 #include <QCommandLineParser>
+#include <QDir>
 #include <stdio.h>
 #include "pngexportimport.h"
 #include "myrominfo.h"
@@ -117,6 +118,9 @@ void    inject();
 
 void    doStuff()
 {
+    QDir pluginsDir(QCoreApplication::applicationDirPath());
+    pluginsDir.cd("plugins");
+    ROMDataEngine::loadCompressionPlugins(pluginsDir);
     showRomInfo(ROMInfo(romFile));
     if (workingModeExport)
         extract();

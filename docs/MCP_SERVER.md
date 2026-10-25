@@ -69,7 +69,6 @@ is a plain message or a JSON object (documented per tool below).
 | `save_preset` | `path` | Save the current tile settings as a preset (.stk) |
 | `open_preset` | `path` | Load a preset (.stk) file |
 | `set_language` | `lang` | Switch the UI language (ids in `get_state` → `languages`) |
-| `set_view_background` | `spec` | Tile view background: hex color (`#RRGGBB`) or `checker` (checkerboard — highlights transparent pixels and assets) |
 
 `set_tiles_location` / `set_palette` / `set_pattern` do not refresh
 automatically — call `refresh` afterwards, like a user clicking Refresh.
