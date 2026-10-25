@@ -19,6 +19,8 @@
 #include <QShortcut>
 #include <QMenuBar>
 #include <QMenu>
+#include <QColorDialog>
+#include <QPainter>
 
 #include <QRegularExpressionValidator>
 #include <QRegularExpression>
@@ -122,6 +124,10 @@ MainUI::MainUI(QWidget *parent) :
     }
     setWindowTitle(qApp->applicationName() + " " + qApp->applicationVersion());
     dataEngine.overrideHeaderInfo = true;
+
+    // Tile view background (checkerboard highlights transparent pixels)
+    m_viewBackgroundSpec = m_settings->value("viewBackground", "checker").toString();
+    applyViewBackground();
 
     // ---- Options menu / language / MCP server ----
     m_translationsDir = translationsDirectory();
@@ -717,6 +723,17 @@ void MainUI::buildMenus()
     m_actionMcpDocs = m_optionsMenu->addAction(tr("MCP documentation"));
     m_actionMcpDocs->setToolTip(tr("Shows how to connect an AI (OpenCode) to this tool and lists the available tools"));
     connect(m_actionMcpDocs, &QAction::triggered, this, &MainUI::openMcpDocs);
+    m_optionsMenu->addSeparator();
+    m_actionViewBgColor = m_optionsMenu->addAction(tr("View background color..."));
+    m_actionViewBgColor->setToolTip(tr("Pick the color shown behind the tiles (color 0 pixels are transparent)"));
+    connect(m_actionViewBgColor, &QAction::triggered, this, [this] {
+        QColor c = QColorDialog::getColor(tileScene->backgroundBrush().color(), this, tr("View background color"));
+        if (c.isValid())
+            setViewBackground(c.name());
+    });
+    m_actionViewBgChecker = m_optionsMenu->addAction(tr("Checkerboard background"));
+    m_actionViewBgChecker->setToolTip(tr("Checkerboard background: highlights transparent pixels and assets"));
+    connect(m_actionViewBgChecker, &QAction::triggered, this, [this] { setViewBackground("checker"); });
     refreshLanguageMenu();
 }
 
@@ -818,6 +835,8 @@ void MainUI::retranslateAll()
         m_actionMcp->setText(tr("MCP AI control server"));
         m_actionMcp->setToolTip(tr("Lets an AI control this tool through the MCP protocol (localhost TCP)"));
         m_actionMcpDocs->setText(tr("MCP documentation"));
+        m_actionViewBgColor->setText(tr("View background color..."));
+        m_actionViewBgChecker->setText(tr("Checkerboard background"));
         if (m_mcpDocsDialog != nullptr)
             m_mcpDocsDialog->setDocumentation(m_language,
                 (m_mcpServer && m_mcpServer->isRunning()) ? m_mcpServer->endpoint() : QString());
@@ -869,6 +888,41 @@ static QString normalizeHex(QString value)
     while (value.startsWith("$"))
         value.remove(0, 1);
     return value;
+}
+
+void MainUI::applyViewBackground()
+{
+    if (m_viewBackgroundSpec == "checker")
+    {
+        QPixmap checker(24, 24);
+        QPainter p(&checker);
+        p.fillRect(0, 0, 24, 24, QColor(46, 46, 46));
+        p.fillRect(0, 0, 12, 12, QColor(72, 72, 72));
+        p.fillRect(12, 12, 12, 12, QColor(72, 72, 72));
+        p.end();
+        tileScene->setBackgroundBrush(QBrush(checker));
+    }
+    else
+        tileScene->setBackgroundBrush(QBrush(QColor(m_viewBackgroundSpec)));
+}
+
+QString MainUI::setViewBackground(const QString &spec)
+{
+    QString s = spec.trimmed();
+    if (s.compare("checker", Qt::CaseInsensitive) == 0)
+    {
+        m_viewBackgroundSpec = "checker";
+    }
+    else
+    {
+        QColor c(s);
+        if (!c.isValid())
+            return "Invalid color: " + spec + " (use #RRGGBB or 'checker')";
+        m_viewBackgroundSpec = c.name();
+    }
+    m_settings->setValue("viewBackground", m_viewBackgroundSpec);
+    applyViewBackground();
+    return QString();
 }
 
 void MainUI::refreshView()
@@ -1025,6 +1079,7 @@ QVariantMap MainUI::collectState() const
     st["palette_no_zero_color"] = ui->paletteNoZeroColorCheckBox->isChecked();
     st["tiles_pattern"] = ui->tilePatternComboBox->currentText();
     st["zoom"] = ui->tileZoomHorizontalSlider->value();
+    st["view_background"] = m_viewBackgroundSpec;
     st["tiles_extracted"] = rawTiles.size();
     st["palette_colors"] = mPalette.colors.size();
     st["preset_name"] = currentSet.name;

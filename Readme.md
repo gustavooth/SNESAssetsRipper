@@ -80,7 +80,7 @@ Format: `# name=` / `# locale=` headers, then one `source = translation` pair pe
 
 # MCP server (AI control)
 
-The `Options -> MCP AI control server` toggle starts a local MCP HTTP server (`http://127.0.0.1:8765/mcp`) exposing 15 tools that let an AI agent fully drive the tool: load ROM, set tile/palette locations, refresh, export/inject PNG, savestate palettes, presets, language switching and window screenshots. Connect OpenCode with `opencode mcp add snestilesripper --global --url http://127.0.0.1:8765/mcp`. `Options -> MCP documentation` shows the in-app documentation window (with a copy button). The executable also works as a headless stdio MCP server (`SNESTilesRipper --mcp-stdio`). Protocol and examples: [docs/MCP_SERVER.md](docs/MCP_SERVER.md).
+The `Options -> MCP AI control server` toggle starts a local MCP HTTP server (`http://127.0.0.1:8765/mcp`) exposing 16 tools that let an AI agent fully drive the tool: load ROM, set tile/palette locations, refresh, export/inject PNG, savestate palettes, presets, language switching, view background and window screenshots. Connect OpenCode with `opencode mcp add snestilesripper --global --url http://127.0.0.1:8765/mcp`. `Options -> MCP documentation` shows the in-app documentation window (with a copy button). The executable also works as a headless stdio MCP server (`SNESTilesRipper --mcp-stdio`). Protocol and examples: [docs/MCP_SERVER.md](docs/MCP_SERVER.md).
 
 # Licencing
 

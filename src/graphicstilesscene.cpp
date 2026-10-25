@@ -13,7 +13,6 @@ void GraphicsTilesScene::buildScene(const QList<tile8> &tiles, const SNESPalette
     tilesPattern = tp;
     allTiles = tiles;
     clear();
-    setBackgroundBrush(Qt::blue);
     for (unsigned int j = 0; j < arrangedTiles.size(); j++)
     {
         for (unsigned int i = 0; i < arrangedTiles[0].size(); i++)

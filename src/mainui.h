@@ -47,6 +47,7 @@ public:
     bool        selectSavestatePalette(int index, QString *error = nullptr);
     QString     setPattern(const QString &name);
     void        setZoom(int value);
+    QString     setViewBackground(const QString &spec);
     void        applyLanguage(const QString &lang);
     QStringList languageList() const;
     QVariantMap collectState() const;
@@ -135,11 +136,15 @@ private:
     QMenu          *m_languageMenu = nullptr;
     QAction        *m_actionMcp = nullptr;
     QAction        *m_actionMcpDocs = nullptr;
+    QAction        *m_actionViewBgColor = nullptr;
+    QAction        *m_actionViewBgChecker = nullptr;
     McpDocsDialog  *m_mcpDocsDialog = nullptr;
+    QString         m_viewBackgroundSpec;
 
     void    buildMenus();
     void    refreshLanguageMenu();
     void    retranslateAll();
+    void    applyViewBackground();
     QString defaultLanguage() const;
 
     void    updatePresetWithUi();
