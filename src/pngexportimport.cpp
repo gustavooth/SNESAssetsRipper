@@ -14,6 +14,8 @@ QImage mergeTilesToImage(const QList<tile8> tiles, const SNESPalette& palette, c
     {
         newImage.setColor(i, palette.colors.at(i).rgb);
     }
+    // SNES: color 0 of a tile is transparent
+    newImage.setColor(0, qRgba(0, 0, 0, 0));
     QString plop = "";
 
 

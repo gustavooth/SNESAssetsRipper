@@ -25,6 +25,8 @@ void GraphicsTilesScene::buildScene(const QList<tile8> &tiles, const SNESPalette
             {
                 newImage.setColor(i, mPalette.colors.at(i).rgb);
             }
+            // SNES: color 0 of a tile is transparent (shows the scene behind)
+            newImage.setColor(0, qRgba(0, 0, 0, 0));
             for (int i = 0; i < 8; i++)
             {
                 for (int j = 0; j < 8; j++)
