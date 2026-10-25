@@ -1,6 +1,6 @@
 # SNESTilesRipper
 
-![SNESTilesRipper — exploring Super Bomberman 5 tiles](docs/screenshot.png)
+![SNESTilesRipper — exploring Super Bomberman 5 tiles](docs/screenshot.png?v=20261025)
 
 > **🤖 AI/MCP ready** — the tool exposes an MCP server (local HTTP, plus a headless stdio mode) so an AI agent can fully control it: load ROMs, locate and extract tiles, change palettes/patterns, export and inject PNGs, manage presets and more. The screenshot above was taken by an AI through it. See [docs/MCP_SERVER.md](docs/MCP_SERVER.md) and the [User Guide](docs/USER_GUIDE.md) (every button and feature explained).
 
