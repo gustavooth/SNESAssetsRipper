@@ -33,17 +33,26 @@ private slots:
 
     void on_searchButton_clicked();
 
-    void on_pushButton_clicked();
+    void on_cancelPushButton_clicked();
 
-    void on_quitPushButton_clicked();
+    void on_applyPushButton_clicked();
+
+    void on_pickColorButton_clicked();
 
 private:
     Ui::PaletteEditor*          ui;
     QGraphicsScene*             scene;
     GraphicsPaletteColorItem*   colorItem;
     SNESPalette                 m_palette;
+    SNESPalette                 m_original;
+    int                         m_selected;
     QString                     rom;
     void editColor();
+    int  selectedIndex() const;
+    void buildScene();
+    void updateSelectionUi();
+    void applyRgbToSelected(int r, int g, int b);
+    void closeEvent(QCloseEvent *event) override;
 };
 
 #endif // PALETTEEDITOR_H

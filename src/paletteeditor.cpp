@@ -5,14 +5,20 @@
 #include <QDebug>
 #include <QMessageBox>
 #include <QFile>
+#include <QColorDialog>
+#include <QCloseEvent>
 
 PaletteEditor::PaletteEditor(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::PaletteEditor),
     colorItem(nullptr),
-    m_palette(16)
+    m_palette(16),
+    m_original(16),
+    m_selected(-1)
 {
     ui->setupUi(this);
+    setWindowFlags(windowFlags() & ~Qt::WindowMaximizeButtonHint);
+    setMaximumSize(640, 680);
     scene = new QGraphicsScene();
     ui->paletteGView->setScene(scene);
     connect(ui->paletteGView, &GraphicsClickableView::itemClicked, [=] {
@@ -22,11 +28,8 @@ PaletteEditor::PaletteEditor(QWidget *parent) :
         if (clicked->iColor >= (unsigned)m_palette.colors.size())
             return;
         colorItem = clicked;
-        ui->lineEditIndex->setText(QString::number(colorItem->iColor));
-        ui->lineEditB->setText(QString::number(qBlue(colorItem->color), 16));
-        ui->lineEditR->setText(QString::number(qRed(colorItem->color), 16));
-        ui->lineEditG->setText(QString::number(qGreen(colorItem->color), 16));
-        ui->lineEditSnes->setText(QString::number(m_palette.colors[colorItem->iColor].snes, 16));
+        m_selected = (int)clicked->iColor;
+        updateSelectionUi();
     });
     connect(ui->lineEditR, &QLineEdit::editingFinished, this, &PaletteEditor::editColor);
     connect(ui->lineEditG, &QLineEdit::editingFinished, this, &PaletteEditor::editColor);
@@ -36,13 +39,39 @@ PaletteEditor::PaletteEditor(QWidget *parent) :
 
 void    PaletteEditor::setPalette(SNESPalette pal)
 {
+    m_original = pal;
+    m_palette = pal;
+    m_selected = pal.colors.isEmpty() ? -1 : 0;
+    colorItem = nullptr;
+    buildScene();
+    updateSelectionUi();
+    if (pal.size == 16)
+        ui->paletteSize16Radio->setChecked(true);
+    if (pal.size == 8)
+        ui->paletteSize8Radio->setChecked(true);
+    if (pal.size == 4)
+        ui->paletteSize4Radio->setChecked(true);
+    if (pal.size == 2)
+        ui->paletteSize2Radio->setChecked(true);
+}
+
+int PaletteEditor::selectedIndex() const
+{
+    if (colorItem != nullptr && colorItem->iColor < (unsigned)m_palette.colors.size())
+        return (int)colorItem->iColor;
+    if (m_selected >= 0 && m_selected < m_palette.colors.size())
+        return m_selected;
+    return -1;
+}
+
+void PaletteEditor::buildScene()
+{
+    scene->clear();
+    scene->setBackgroundBrush(QColor(0x24, 0x27, 0x2b));
     unsigned int j = 0;
     unsigned int i = 0;
     unsigned colPos = 0;
-    scene->clear();
-    scene->setBackgroundBrush(Qt::black);
-    m_palette = pal;
-    foreach(SNESColor col, pal.colors)
+    foreach(SNESColor col, m_palette.colors)
     {
         GraphicsPaletteColorItem *newItem = new GraphicsPaletteColorItem();
         newItem->color = col.rgb;
@@ -56,14 +85,44 @@ void    PaletteEditor::setPalette(SNESPalette pal)
             i = 0;
         }
     }
-    if (pal.size == 16)
-        ui->paletteSize16Radio->setChecked(true);
-    if (pal.size == 8)
-        ui->paletteSize8Radio->setChecked(true);
-    if (pal.size == 4)
-        ui->paletteSize4Radio->setChecked(true);
-    if (pal.size == 2)
-        ui->paletteSize2Radio->setChecked(true);
+}
+
+void PaletteEditor::updateSelectionUi()
+{
+    int idx = selectedIndex();
+    if (idx < 0)
+    {
+        ui->lineEditIndex->clear();
+        ui->lineEditR->clear();
+        ui->lineEditG->clear();
+        ui->lineEditB->clear();
+        ui->lineEditSnes->clear();
+        ui->pickColorButton->setStyleSheet(QString());
+        return;
+    }
+    const SNESColor &col = m_palette.colors[idx];
+    ui->lineEditIndex->setText(QString::number(idx));
+    ui->lineEditR->setText(QString::number(qRed(col.rgb), 16));
+    ui->lineEditG->setText(QString::number(qGreen(col.rgb), 16));
+    ui->lineEditB->setText(QString::number(qBlue(col.rgb), 16));
+    ui->lineEditSnes->setText(QString::number(col.snes, 16));
+    QColor bg(col.rgb);
+    int lum = (299 * bg.red() + 587 * bg.green() + 114 * bg.blue()) / 1000;
+    QColor fg = (lum > 128) ? QColor(0, 0, 0) : QColor(255, 255, 255);
+    ui->pickColorButton->setStyleSheet(
+        QString("QPushButton { background-color: %1; color: %2; }").arg(bg.name(), fg.name()));
+}
+
+void PaletteEditor::applyRgbToSelected(int r, int g, int b)
+{
+    int idx = selectedIndex();
+    if (idx < 0)
+        return;
+    m_palette.colors[idx].setRgb(qRgb(r, g, b));
+    buildScene();
+    updateSelectionUi();
+    scene->update();
+    emit paletteChanged();
 }
 
 SNESPalette PaletteEditor::palette() const
@@ -83,32 +142,38 @@ PaletteEditor::~PaletteEditor()
 
 void    PaletteEditor::editColor()
 {
-    if (colorItem == nullptr)
-        return;
-    if (colorItem->iColor >= (unsigned)m_palette.colors.size())
-        return;
     bool    ok;
-    colorItem->color = qRgb(ui->lineEditR->text().toUInt(&ok, 16), ui->lineEditG->text().toUInt(&ok, 16), ui->lineEditB->text().toUInt(&ok, 16));
-    m_palette.colors[colorItem->iColor].setRgb(colorItem->color);
-    ui->lineEditSnes->setText(QString::number(m_palette.colors[colorItem->iColor].snes, 16));
-    scene->update();
+    int idx = selectedIndex();
+    if (idx < 0)
+        return;
+    applyRgbToSelected(ui->lineEditR->text().toUInt(&ok, 16), ui->lineEditG->text().toUInt(&ok, 16), ui->lineEditB->text().toUInt(&ok, 16));
 }
 
 
 void PaletteEditor::on_lineEditSnes_editingFinished()
 {
-    if (colorItem == nullptr)
-        return;
-    if (colorItem->iColor >= (unsigned)m_palette.colors.size())
-        return;
     bool    ok;
-    SNESColor& col = m_palette.colors[colorItem->iColor];
+    int idx = selectedIndex();
+    if (idx < 0)
+        return;
+    SNESColor& col = m_palette.colors[idx];
     col.setSNES(ui->lineEditSnes->text().toUInt(&ok, 16));
-    ui->lineEditR->setText(QString::number(qRed(col.rgb)));
-    ui->lineEditB->setText(QString::number(qBlue(col.rgb)));
-    ui->lineEditG->setText(QString::number(qGreen(col.rgb)));
-    colorItem->color = col.rgb;
+    buildScene();
+    updateSelectionUi();
     scene->update();
+    emit paletteChanged();
+}
+
+void PaletteEditor::on_pickColorButton_clicked()
+{
+    int idx = selectedIndex();
+    if (idx < 0)
+        return;
+    QColor current(m_palette.colors[idx].rgb);
+    QColor picked = QColorDialog::getColor(current, this, tr("Pick a color"));
+    if (!picked.isValid())
+        return;
+    applyRgbToSelected(picked.red(), picked.green(), picked.blue());
 }
 
 
@@ -142,15 +207,35 @@ void PaletteEditor::on_searchButton_clicked()
     QMessageBox::information(this, tr("Palette Data "),  text);
 }
 
-void PaletteEditor::on_pushButton_clicked()
+void PaletteEditor::on_cancelPushButton_clicked()
 {
+    // Discard every change made since the dialog was opened.
+    m_palette = m_original;
+    m_selected = m_palette.colors.isEmpty() ? -1 : 0;
+    colorItem = nullptr;
+    buildScene();
+    updateSelectionUi();
     emit paletteChanged();
+    hide();
 }
 
-void PaletteEditor::on_quitPushButton_clicked()
+void PaletteEditor::on_applyPushButton_clicked()
 {
+    // Changes were already previewed live; just confirm and close.
     emit paletteChanged();
-    this->hide();
+    hide();
+}
+
+void PaletteEditor::closeEvent(QCloseEvent *event)
+{
+    // Closing the window behaves like Cancel: changes are not applied.
+    m_palette = m_original;
+    m_selected = m_palette.colors.isEmpty() ? -1 : 0;
+    colorItem = nullptr;
+    buildScene();
+    updateSelectionUi();
+    emit paletteChanged();
+    event->accept();
 }
 
 void PaletteEditor::retranslate()

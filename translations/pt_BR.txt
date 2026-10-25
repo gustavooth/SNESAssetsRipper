@@ -140,8 +140,10 @@ SNES Value is the 2 bytes value used by the SNES = O valor SNES são os 2 bytes 
 SNES Value :  = Valor SNES :
 RGB Values are html/normal values (0-255) = Valores RGB são valores html/normais (0-255)
 Search in ROM = Buscar na ROM
-Save = Salvar
-Save & Quit = Salvar e sair
+Pick color... = Escolher cor...
+Pick a color = Escolha uma cor
+Cancel = Cancelar
+Apply & Close = Aplicar e fechar
 
 [SavestatePaletteSelector]
 Save & quit = Salvar e sair
