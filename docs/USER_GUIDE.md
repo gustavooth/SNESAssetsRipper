@@ -1,6 +1,6 @@
 # SNESTilesRipper — User Guide
 
-![SNESTilesRipper](screenshot.png?v=20261025)
+![SNESTilesRipper](screenshot-20261025.png)
 
 SNESTilesRipper views, extracts and re-injects SNES graphics (tiles) and
 palettes directly from a ROM file. You point it at a byte range in the ROM,
