@@ -1,4 +1,4 @@
-# Tradução brasileira do SNESAssetsRipper
+# Tradução brasileira do SNESTilesRipper
 # Este arquivo segue o formato documentado em README.txt
 # name=Português (Brasil)
 # locale=pt_BR
@@ -99,7 +99,7 @@ Search result = Resultado da busca
 Update Sprite scene when selecting palette = Atualizar cena de sprites ao selecionar paleta
 
 [TileInfow]
-SNESAssetsRipper - Palette Editor = SNESAssetsRipper - Editor de paleta
+SNESTilesRipper - Palette Editor = SNESTilesRipper - Editor de paleta
 PC address : = Endereço PC :
 SNES address : = Endereço SNES :
 Tile position in set : = Posição do tile no conjunto :

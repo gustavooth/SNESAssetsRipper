@@ -16,7 +16,7 @@ static QString buildDocumentation(const QString &language, const QString &tcpEnd
     if (language.startsWith("pt"))
     {
         QString txt;
-        txt += "SNESASSETSRIPPER - SERVIDOR MCP (CONTROLE POR IA)\n";
+        txt += "SNESTILESRIPPER - SERVIDOR MCP (CONTROLE POR IA)\n";
         txt += "====================================================\n\n";
         txt += "Esta ferramenta expõe um servidor MCP (Model Context Protocol) que\n";
         txt += "permite uma IA controlar tudo: carregar ROM, definir localização dos\n";
@@ -27,14 +27,14 @@ static QString buildDocumentation(const QString &language, const QString &tcpEnd
         txt += "1. Deixe esta janela aberta e ligue o servidor no menu Opções\n";
         txt += "   (\"Servidor MCP de controle por IA\").\n";
         txt += "2. No terminal, registre o servidor no OpenCode:\n\n";
-        txt += "  opencode mcp add snesassetsripper --global --url " + (tcpEndpoint.isEmpty() ? "http://127.0.0.1:8765/mcp" : tcpEndpoint) + "\n\n";
+        txt += "  opencode mcp add snestilesripper --global --url " + (tcpEndpoint.isEmpty() ? "http://127.0.0.1:8765/mcp" : tcpEndpoint) + "\n\n";
         txt += "3. Confira com:\n\n  opencode mcp list\n\n";
-        txt += "As tools ficam disponíveis como tools.snesassetsripper.<tool>(...) no\n";
+        txt += "As tools ficam disponíveis como tools.snestilesripper.<tool>(...) no\n";
         txt += "Code Mode, controlando ESTA janela que você está vendo.\n\n";
         txt += "MODO STDIO ALTERNATIVO (sem janela)\n";
         txt += "-----------------------------------\n";
         txt += "O executável também é um servidor MCP stdio (o cliente o inicia):\n\n";
-        txt += "  opencode mcp add snesassetsripper --global -- " + exe + " --mcp-stdio\n\n";
+        txt += "  opencode mcp add snestilesripper --global -- " + exe + " --mcp-stdio\n\n";
         txt += "Nesse modo o processo roda em segundo plano, sem janela, falando MCP\n";
         txt += "por stdin/stdout (requer ambiente sem tema GTK forçado).\n\n";
         txt += "PROTOCOLO (Streamable HTTP em " + (tcpEndpoint.isEmpty() ? "http://127.0.0.1:8765/mcp" : tcpEndpoint) + ")\n";
@@ -71,7 +71,7 @@ static QString buildDocumentation(const QString &language, const QString &tcpEnd
         return txt;
     }
     QString txt;
-    txt += "SNESASSETSRIPPER - MCP SERVER (AI CONTROL)\n";
+    txt += "SNESTILESRIPPER - MCP SERVER (AI CONTROL)\n";
     txt += "=========================================\n\n";
     txt += "This tool exposes an MCP (Model Context Protocol) server that lets an\n";
     txt += "AI drive everything: load ROM, set tile/palette locations, refresh the\n";
@@ -82,14 +82,14 @@ static QString buildDocumentation(const QString &language, const QString &tcpEnd
     txt += "1. Keep this window open and enable the server in the Options menu\n";
     txt += "   (\"MCP AI control server\").\n";
     txt += "2. In a terminal, register the server with OpenCode:\n\n";
-    txt += "  opencode mcp add snesassetsripper --global --url " + (tcpEndpoint.isEmpty() ? "http://127.0.0.1:8765/mcp" : tcpEndpoint) + "\n\n";
+    txt += "  opencode mcp add snestilesripper --global --url " + (tcpEndpoint.isEmpty() ? "http://127.0.0.1:8765/mcp" : tcpEndpoint) + "\n\n";
     txt += "3. Check with:\n\n  opencode mcp list\n\n";
-    txt += "Tools become available as tools.snesassetsripper.<tool>(...) in Code\n";
+    txt += "Tools become available as tools.snestilesripper.<tool>(...) in Code\n";
     txt += "Mode, driving THIS window you are looking at.\n\n";
     txt += "ALTERNATE STDIO MODE (headless)\n";
     txt += "-------------------------------\n";
     txt += "The executable is also a stdio MCP server (the client spawns it):\n\n";
-    txt += "  opencode mcp add snesassetsripper --global -- " + exe + " --mcp-stdio\n\n";
+    txt += "  opencode mcp add snestilesripper --global -- " + exe + " --mcp-stdio\n\n";
     txt += "In that mode the process runs in the background, windowless, speaking\n";
     txt += "MCP over stdin/stdout (needs an environment without a forced GTK\n";
     txt += "platform theme).\n\n";

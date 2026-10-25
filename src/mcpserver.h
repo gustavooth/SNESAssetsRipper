@@ -19,7 +19,7 @@ class MainUI;
 // - Streamable HTTP server on http://127.0.0.1:<port>/mcp (GUI toggle in the
 //   Options menu): MCP clients connect straight to the running instance.
 // - stdio mode: the binary is started with --mcp-stdio by an MCP client
-//   (ex: `opencode mcp add ... -- SNESAssetsRipper --mcp-stdio`); no GUI is
+//   (ex: `opencode mcp add ... -- SNESTilesRipper --mcp-stdio`); no GUI is
 //   shown and stdin/stdout carry the protocol.
 //
 // Tools map to actions a user could do in the UI, so an AI client can fully

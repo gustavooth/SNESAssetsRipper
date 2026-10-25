@@ -9,7 +9,7 @@ class QuintetCompression : public QObject, public CompressionInterface
 {
     Q_OBJECT
     Q_INTERFACES(CompressionInterface)
-    Q_PLUGIN_METADATA(IID "fr.nyo.SNESAssetsRipper.QuintetCompression" FILE "quintet.json")
+    Q_PLUGIN_METADATA(IID "fr.nyo.SNESTilesRipper.QuintetCompression" FILE "quintet.json")
 
 public:
     QuintetCompression();

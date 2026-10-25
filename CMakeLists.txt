@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project(SNESAssetsRipper VERSION 1.0 LANGUAGES C CXX)
+project(SNESTilesRipper VERSION 1.0 LANGUAGES C CXX)
 
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
@@ -40,22 +40,22 @@ file(GLOB APP_SOURCES CONFIGURE_DEPENDS ${CMAKE_SOURCE_DIR}/src/*.cpp)
 list(REMOVE_ITEM APP_SOURCES ${CMAKE_SOURCE_DIR}/src/tinymain.cpp)
 file(GLOB APP_UIS CONFIGURE_DEPENDS ${CMAKE_SOURCE_DIR}/src/*.ui)
 
-add_executable(snesassetsripper
+add_executable(snestilesripper
 	${APP_SOURCES}
 	${LOWLEVEL_SOURCES}
 	${APP_UIS})
 if(WIN32)
-	target_sources(snesassetsripper PRIVATE ${CMAKE_SOURCE_DIR}/src/snesassetsripper.rc)
+	target_sources(snestilesripper PRIVATE ${CMAKE_SOURCE_DIR}/src/snestilesripper.rc)
 endif()
-target_include_directories(snesassetsripper PRIVATE
+target_include_directories(snestilesripper PRIVATE
 	${CMAKE_SOURCE_DIR}/src
 	${LOW}
 	${LOW}/savestate
 	${LOW}/puff
 	${LOW}/compressions)
-target_link_libraries(snesassetsripper PRIVATE
+target_link_libraries(snestilesripper PRIVATE
 	Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Network)
-set_target_properties(snesassetsripper PROPERTIES OUTPUT_NAME "SNESAssetsRipper")
+set_target_properties(snestilesripper PROPERTIES OUTPUT_NAME "SNESTilesRipper")
 
 # ------------------------------------------------------------------ CLI
 
@@ -74,10 +74,10 @@ set(CLI_SOURCES
 	${LOW}/rominfo.c
 	${LOW}/palette.c)
 
-add_executable(snesassetsripper-cli ${CLI_SOURCES})
-target_include_directories(snesassetsripper-cli PRIVATE ${CMAKE_SOURCE_DIR}/src)
-target_link_libraries(snesassetsripper-cli PRIVATE Qt6::Core Qt6::Gui)
-set_target_properties(snesassetsripper-cli PROPERTIES OUTPUT_NAME "SNESAssetsRipperCLI")
+add_executable(snestilesripper-cli ${CLI_SOURCES})
+target_include_directories(snestilesripper-cli PRIVATE ${CMAKE_SOURCE_DIR}/src)
+target_link_libraries(snestilesripper-cli PRIVATE Qt6::Core Qt6::Gui)
+set_target_properties(snestilesripper-cli PROPERTIES OUTPUT_NAME "SNESTilesRipperCLI")
 
 # ------------------------------------------------- compression plugins
 

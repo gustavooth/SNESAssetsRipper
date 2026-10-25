@@ -14,7 +14,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>SNESAssetsRipper - Palette Editor</string>
+   <string>SNESTilesRipper - Palette Editor</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

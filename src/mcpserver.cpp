@@ -279,7 +279,7 @@ QByteArray McpServer::dispatchMessage(const QJsonObject &msg)
         toolsCap["listChanged"] = false;
         result["capabilities"] = QJsonObject{ {"tools", toolsCap} };
         result["serverInfo"] = QJsonObject{
-            {"name", "SNESAssetsRipper"},
+            {"name", "SNESTilesRipper"},
             {"version", QCoreApplication::applicationVersion()}
         };
         return QJsonDocument(makeResult(id, result)).toJson(QJsonDocument::Compact);

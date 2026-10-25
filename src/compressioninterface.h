@@ -17,6 +17,6 @@ class CompressionInterface {
     virtual QString decompressionError() = 0;
 };
 
-Q_DECLARE_INTERFACE(CompressionInterface, "fr.nyo.SNESAssetsRipper.CompressionInterface")
+Q_DECLARE_INTERFACE(CompressionInterface, "fr.nyo.SNESTilesRipper.CompressionInterface")
 
 #endif // COMPRESSIONINTERFACE_H

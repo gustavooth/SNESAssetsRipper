@@ -8,7 +8,7 @@ class NintendoCompression : public QObject, public CompressionInterface
 {
     Q_OBJECT
     Q_INTERFACES(CompressionInterface)
-    Q_PLUGIN_METADATA(IID "fr.nyo.SNESAssetsRipper.NintendoCompression" FILE "nintendo.json")
+    Q_PLUGIN_METADATA(IID "fr.nyo.SNESTilesRipper.NintendoCompression" FILE "nintendo.json")
 
 public:
     NintendoCompression();

@@ -100,14 +100,16 @@ MainUI::MainUI(QWidget *parent) :
         openRom("F:\\Emulation\\Soul Blazer (U) [!]\\Soul Blazer (US).smc");
         loadPreset("F:\\Project\\SNESTilesKitten\\Presets\\Soul Blazer - Hero sprite.stk");
     }
-    m_settings = new QSettings("SNESAssetsRipper", "SNESAssetsRipper");
-    // One-time migration of settings saved before the fork rename
-    QSettings legacySettings("skarsnik.nyo.fr", "SNESTilesKitten");
-    if (m_settings->allKeys().isEmpty() && !legacySettings.allKeys().isEmpty())
+    m_settings = new QSettings("SNESTilesRipper", "SNESTilesRipper");
+    // One-time migration of settings saved under the previous identities
+    QSettings legacyFork("SNESAssetsRipper", "SNESAssetsRipper");
+    QSettings legacyUpstream("skarsnik.nyo.fr", "SNESTilesKitten");
+    QSettings &legacy = legacyFork.allKeys().isEmpty() ? legacyUpstream : legacyFork;
+    if (m_settings->allKeys().isEmpty() && !legacy.allKeys().isEmpty())
     {
-        const QStringList legacyKeys = legacySettings.allKeys();
+        const QStringList legacyKeys = legacy.allKeys();
         for (const QString &key : legacyKeys)
-            m_settings->setValue(key, legacySettings.value(key));
+            m_settings->setValue(key, legacy.value(key));
         m_settings->sync();
     }
     if (m_settings->contains("windowGeometry"))
@@ -133,7 +135,7 @@ MainUI::MainUI(QWidget *parent) :
     });
     // Headless instances (spawned with --mcp-stdio) never touch the TCP
     // server or the saved settings of the GUI instance.
-    const bool headlessMode = qApp->property("snesassetsripper/headless").toBool();
+    const bool headlessMode = qApp->property("snestilesripper/headless").toBool();
     if (!headlessMode && m_settings->value("mcpEnabled", false).toBool())
         m_actionMcp->setChecked(true);   // triggers toggleMcpServer(true)
 }

@@ -1,4 +1,4 @@
-SNESAssetsRipper - arquivos de tradução / translation files
+SNESTilesRipper - arquivos de tradução / translation files
 ===========================================================
 
 Cada arquivo .txt desta pasta é um idioma da interface. O programa lista os

@@ -9,7 +9,7 @@ class BandaiNamco : public QObject, public CompressionInterface
 {
     Q_OBJECT
     Q_INTERFACES(CompressionInterface)
-    Q_PLUGIN_METADATA(IID "fr.nyo.SNESAssetsRipper.BandaiNamco" FILE "bandainamco.json")
+    Q_PLUGIN_METADATA(IID "fr.nyo.SNESTilesRipper.BandaiNamco" FILE "bandainamco.json")
 
 public:
     BandaiNamco();

@@ -9,7 +9,7 @@ class KonamiCompression : public QObject, public CompressionInterface
 {
     Q_OBJECT
     Q_INTERFACES(CompressionInterface)
-    Q_PLUGIN_METADATA(IID "fr.nyo.SNESAssetsRipper.KonamiCompression" FILE "konami.json")
+    Q_PLUGIN_METADATA(IID "fr.nyo.SNESTilesRipper.KonamiCompression" FILE "konami.json")
 
 public:
     KonamiCompression();

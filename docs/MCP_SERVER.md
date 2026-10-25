@@ -1,6 +1,6 @@
 # MCP Server (AI control)
 
-SNESAssetsRipper can expose a **MCP (Model Context Protocol) server** so an AI
+SNESTilesRipper can expose a **MCP (Model Context Protocol) server** so an AI
 agent can fully control the tool: load ROMs, set tile locations, extract,
 export/inject PNGs, pick savestate palettes, manage presets and switch the UI
 language. The AI drives the **same window you are looking at**.
@@ -14,12 +14,12 @@ language. The AI drives the **same window you are looking at**.
 - Register it with OpenCode:
 
   ```sh
-  opencode mcp add snesassetsripper --global --url http://127.0.0.1:8765/mcp
-  opencode mcp list        # expect: ✓ snesassetsripper connected
+  opencode mcp add snestilesripper --global --url http://127.0.0.1:8765/mcp
+  opencode mcp list        # expect: ✓ snestilesripper connected
   ```
 
-- Tools become available as `tools.snesassetsripper.<tool>(...)` (Code Mode) or
-  `snesassetsripper_<tool>` depending on the client.
+- Tools become available as `tools.snestilesripper.<tool>(...)` (Code Mode) or
+  `snestilesripper_<tool>` depending on the client.
 - Use **Options -> MCP documentation** inside the app to see this documentation
   in a window with a **copy** button.
 
@@ -29,7 +29,7 @@ The executable itself is also a stdio MCP server, for clients that spawn the
 process (no window, no GUI needed):
 
 ```sh
-opencode mcp add snesassetsripper --global -- /path/to/SNESAssetsRipper --mcp-stdio
+opencode mcp add snestilesripper --global -- /path/to/SNESTilesRipper --mcp-stdio
 ```
 
 Notes: the process forces `QT_QPA_PLATFORM=offscreen` and drops a forced GTK
@@ -120,7 +120,7 @@ curl -s -X POST http://127.0.0.1:8765/mcp \
 - Ligue em **Opções -> Servidor MCP de controle por IA** (fica salvo).
 - Endpoint HTTP local: `http://127.0.0.1:8765/mcp`.
 - Conecte o OpenCode:
-  `opencode mcp add snesassetsripper --global --url http://127.0.0.1:8765/mcp`
+  `opencode mcp add snestilesripper --global --url http://127.0.0.1:8765/mcp`
 - **Opções -> Documentação MCP** mostra esta documentação dentro do programa,
   com botão para copiar (já inclui o comando de registro pronto).
 - 15 tools deixam uma IA controlar a janela que você está vendo: carregar ROM,

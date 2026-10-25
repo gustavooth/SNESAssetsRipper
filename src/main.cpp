@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
     // Windows hack to have output in the console
     QApplication a(argc, argv);
 
-    QApplication::setApplicationName("SNESAssetsRipper");
+    QApplication::setApplicationName("SNESTilesRipper");
     QApplication::setApplicationVersion(QString(__DATE__));
 
     QDir pluginsDir(qApp->applicationDirPath());
@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
     {
         patternDir.cdUp();
         patternDir.cdUp();
-        patternDir.cd("SNESAssetsRipper");
+        patternDir.cd("SNESTilesRipper");
     }
     if (!patternDir.cd("TilesPatterns"))
     {
@@ -101,7 +101,7 @@ int main(int argc, char *argv[])
     {
         // Headless MCP server mode: an MCP client (ex: OpenCode) spawned the
         // binary and speaks the protocol over stdin/stdout. No window.
-        a.setProperty("snesassetsripper/headless", true);
+        a.setProperty("snestilesripper/headless", true);
         MainUI w;
         McpServer server;
         server.setTarget(&w);
