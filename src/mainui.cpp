@@ -52,6 +52,10 @@ MainUI::MainUI(QWidget *parent) :
     tileScene = new GraphicsTilesScene();
     palScene = new QGraphicsScene();
     paletteEditor = new PaletteEditor();
+    // Ctrl + mouse wheel zooms the tiles view (steps applied to the zoom slider)
+    connect(ui->graphicsView, &MGraphicsView::zoomRequested, this, [this](int steps) {
+        ui->tileZoomHorizontalSlider->setValue(ui->tileZoomHorizontalSlider->value() + steps);
+    });
     connect(paletteEditor, &PaletteEditor::paletteChanged, this, [=] {
         mPalette = paletteEditor->palette();
         buildPaletteScene();

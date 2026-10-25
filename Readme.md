@@ -64,6 +64,11 @@ docs/                 MCP server documentation
 bin/                  build output (gitignored): GUI, CLI and bin/plugins/*.so
 ```
 
+# Controls (tiles view)
+
+- **Ctrl + mouse wheel**: zoom in/out (moves the Zoom slider)
+- **Left click + drag**: pan around the tiles view
+
 # Working on the code
 
 You have to be carefull when you work on the code. All the low level stuff (mainly SNES specific stuff) are located in C files in the `lowlevelstuff` directory. You should probably work on the [base project](https://github.com/Skarsnik/sneshacking/) if you need to change/correct something in there.
