@@ -136,6 +136,7 @@ private:
     QMenu          *m_languageMenu = nullptr;
     QAction        *m_actionMcp = nullptr;
     QAction        *m_actionMcpDocs = nullptr;
+    QMenu          *m_viewBgMenu = nullptr;
     QAction        *m_actionViewBgColor = nullptr;
     QAction        *m_actionViewBgChecker = nullptr;
     McpDocsDialog  *m_mcpDocsDialog = nullptr;

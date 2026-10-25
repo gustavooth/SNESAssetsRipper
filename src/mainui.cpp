@@ -728,15 +728,15 @@ void MainUI::buildMenus()
     m_actionMcpDocs->setToolTip(tr("Shows how to connect an AI (OpenCode) to this tool and lists the available tools"));
     connect(m_actionMcpDocs, &QAction::triggered, this, &MainUI::openMcpDocs);
     m_optionsMenu->addSeparator();
-    m_actionViewBgColor = m_optionsMenu->addAction(tr("View background color..."));
-    m_actionViewBgColor->setToolTip(tr("Pick the color shown behind the tiles (color 0 pixels are transparent)"));
+    m_viewBgMenu = m_optionsMenu->addMenu(tr("View background color"));
+    m_viewBgMenu->setToolTip(tr("Pick the color shown behind the tiles (color 0 pixels are transparent)"));
+    m_actionViewBgColor = m_viewBgMenu->addAction(tr("Pick color..."));
     connect(m_actionViewBgColor, &QAction::triggered, this, [this] {
         QColor c = QColorDialog::getColor(tileScene->backgroundBrush().color(), this, tr("View background color"));
         if (c.isValid())
             setViewBackground(c.name());
     });
-    m_actionViewBgChecker = m_optionsMenu->addAction(tr("Checkerboard background"));
-    m_actionViewBgChecker->setToolTip(tr("Checkerboard background: highlights transparent pixels and assets"));
+    m_actionViewBgChecker = m_viewBgMenu->addAction(tr("Checkerboard"));
     connect(m_actionViewBgChecker, &QAction::triggered, this, [this] { setViewBackground("checker"); });
     refreshLanguageMenu();
 }
@@ -839,8 +839,10 @@ void MainUI::retranslateAll()
         m_actionMcp->setText(tr("MCP AI control server"));
         m_actionMcp->setToolTip(tr("Lets an AI control this tool through the MCP protocol (localhost TCP)"));
         m_actionMcpDocs->setText(tr("MCP documentation"));
-        m_actionViewBgColor->setText(tr("View background color..."));
-        m_actionViewBgChecker->setText(tr("Checkerboard background"));
+        m_viewBgMenu->setTitle(tr("View background color"));
+        m_viewBgMenu->setToolTip(tr("Pick the color shown behind the tiles (color 0 pixels are transparent)"));
+        m_actionViewBgColor->setText(tr("Pick color..."));
+        m_actionViewBgChecker->setText(tr("Checkerboard"));
         if (m_mcpDocsDialog != nullptr)
             m_mcpDocsDialog->setDocumentation(m_language,
                 (m_mcpServer && m_mcpServer->isRunning()) ? m_mcpServer->endpoint() : QString());
