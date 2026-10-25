@@ -1,4 +1,4 @@
 [submodule "lowlevelstuff"]
-	path = lowlevelstuff
+	path = src/lowlevelstuff
 	url = https://github.com/Skarsnik/sneshacking.git
 	branch = master
